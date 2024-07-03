@@ -70,27 +70,6 @@ def takeCommand():
         return statement
 
 
-def weather(city_name):
-    api_key = "2db14941b6964b98a42141601240307"
-    base_url = "https://api.weatherapi.com/v1/current.json"
-    complete_url = f"{base_url}?key={api_key}&q={city_name}"
-
-    response = requests.get(complete_url)
-    a = response.json()
-
-    if "error" not in a:
-        current_temp = a['current']['temp_c']
-        current_humid = a['current']['humidity']
-        weather_description = a['current']['condition']['text']
-        speak(
-            f"Temperature is {current_temp} degrees Celsius, humidity is {current_humid} percent, and the weather is "
-            f"described as {weather_description}.")
-        print(f"Temperature: {current_temp} °C\nHumidity: {current_humid} %\nDescription: {weather_description}")
-    else:
-        speak("City not found. Please try again.")
-        print("City not found. Please try again.")
-
-
 def main():
     print("Loading your personal assistant...")
     speak("Loading your personal assistant...")
@@ -145,9 +124,13 @@ def main():
             print(answer)
 
         elif 'weather' in statement:
+            api_key = "Apply your unique id"
+            base_url = "https://api.openweathermap.org/data/2.5/weather?"
             speak("what is the city name")
             city_name = takeCommand()
-            weather(city_name)
+            complete_url = base_url + "appid=" + api_key + "&q=" + city_name
+            response = requests.get(complete_url)
+            a = response.json()
             if a["cod"] != "404":
                 b = a["main"]
                 current_temp = b["temp"]
