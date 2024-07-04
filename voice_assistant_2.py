@@ -70,6 +70,24 @@ def takeCommand():
         return statement
 
 
+def weather(city_name):
+    api_key = "2db14941b6964b98a42141601240307"
+    base_url = "http://api.weatherapi.com/v1/current.json"
+    complete_url = f"{base_url}?key={api_key}&q={city_name}"
+
+    response = requests.get(complete_url)
+    data = response.json()
+
+    if "error" not in data:
+        current_temp = data['current']['temp_c']
+        current_humid = data['current']['humidity']
+        weather_description = data['current']['condition']['text']
+        speak(f"Temperature is {current_temp} degree celsius, humidity is {current_humid} percent, and weather is described as {weather_description}.")
+        print(f"Temparature: {current_temp} °C\n, Humidity: {current_humid}%\n, and Weather details: {weather_description}.")
+    else:
+        speak("City not found. Please try again.")
+        print("City not found. Please try again.")
+
 def main():
     print("Loading your personal assistant...")
     speak("Loading your personal assistant...")
@@ -124,31 +142,9 @@ def main():
             print(answer)
 
         elif 'weather' in statement:
-            api_key = "Apply your unique id"
-            base_url = "https://api.openweathermap.org/data/2.5/weather?"
-            speak("what is the city name")
+            speak("what is the city")
             city_name = takeCommand()
-            complete_url = base_url + "appid=" + api_key + "&q=" + city_name
-            response = requests.get(complete_url)
-            a = response.json()
-            if a["cod"] != "404":
-                b = a["main"]
-                current_temp = b["temp"]
-                current_humid = b["humidity"]
-                c = a["weather"]
-                weather_description = c[0]["description"]
-                speak(" Temperature in kelvin unit is " + str(current_temp) +
-                      "\n humidity in percentage is " +
-                      str(current_humid) +
-                      "\n description " +
-                      str(weather_description))
-                print(" Temperature in kelvin unit = " + str(current_temp)
-                      + "\n description " + str(weather_description) +
-                      "humidity (in percentage) = " +
-                      str(current_humid))
-            else:
-                speak("City not found. Please try again.")
-                print("City not found. Please try again.")
+            weather(city_name)
 
 
 if __name__ == '__main__':
